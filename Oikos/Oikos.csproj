@@ -45,14 +45,78 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\InfoContainer.cs" />
+    <Compile Include="Controls\WorldControl\ClimateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WorldControl\ClimateControl.Designer.cs">
+      <DependentUpon>ClimateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WorldControl\InfoPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WorldControl\InfoPanel.Designer.cs">
+      <DependentUpon>InfoPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WorldControl\WorldPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WorldControl\WorldPanel.Designer.cs">
+      <DependentUpon>WorldPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WorldGeneration\GeneControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WorldGeneration\GeneControl.Designer.cs">
+      <DependentUpon>GeneControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WorldGeneration\GenomControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WorldGeneration\GenomControl.Designer.cs">
+      <DependentUpon>GenomControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WorldGeneration\WorldGenerationControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WorldGeneration\WorldGenerationControl.Designer.cs">
+      <DependentUpon>WorldGenerationControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Kernel\Dwellers\Creature.cs" />
+    <Compile Include="Kernel\Dwellers\Herd.cs" />
+    <Compile Include="Kernel\Dwellers\Species.cs" />
+    <Compile Include="Kernel\Environment\Biom.cs" />
+    <Compile Include="Kernel\Environment\Habitat.cs" />
+    <Compile Include="Kernel\Environment\World.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Controls\WorldControl\ClimateControl.resx">
+      <DependentUpon>ClimateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WorldControl\InfoPanel.resx">
+      <DependentUpon>InfoPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WorldControl\WorldPanel.resx">
+      <DependentUpon>WorldPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WorldGeneration\GeneControl.resx">
+      <DependentUpon>GeneControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WorldGeneration\GenomControl.resx">
+      <DependentUpon>GenomControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WorldGeneration\WorldGenerationControl.resx">
+      <DependentUpon>WorldGenerationControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
