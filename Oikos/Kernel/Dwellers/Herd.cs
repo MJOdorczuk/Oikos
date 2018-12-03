@@ -9,11 +9,17 @@ namespace Oikos.Kernel.Dwellers
 {
     class Herd
     {
+        // Static fields
         private static readonly Random rnd = new Random();
+        // End of static fields
+
+
         private Habitat habitat;
         public readonly Creature ancestor;
         private List<Creature> members = new List<Creature>();
 
+
+        // Constructors
         public Herd(Creature ancestor, Habitat habitat)
         {
             this.ancestor = ancestor;
@@ -54,10 +60,13 @@ namespace Oikos.Kernel.Dwellers
             {
                 members.Add(new Creature(pater, ancestor));
             }
-            this.Habitat = habitat;
             habitat.AddHerd(this);
         }
-
+        private Herd(List<Creature> members, Creature ancestor)
+        {
+            this.members = members;
+            this.ancestor = ancestor;
+        }
         internal static Herd Multiply(Creature ancestor)
         {
             Herd herd = new Herd(ancestor, null);
@@ -70,11 +79,36 @@ namespace Oikos.Kernel.Dwellers
             return herd;
         }
 
-        private Herd(List<Creature> members, Creature ancestor)
+        // Accessors
+        internal int Count()
         {
-            this.members = members;
-            this.ancestor = ancestor;
+            return members.Count();
         }
+        internal Habitat Habitat { get => habitat; set => habitat = value; }
+        public Dictionary<string, double> AverageGenom()
+        {
+            Dictionary<string, double> ret = new Dictionary<string, double>();
+            List<string> calls = Creature.Genes;
+            foreach (string key in calls)
+            {
+                ret[key] = 0;
+            }
+            foreach (var member in members)
+            {
+                foreach (string key in calls)
+                {
+                    ret[key] += member.Gene(key);
+                }
+            }
+            foreach (var key in calls)
+            {
+                ret[key] /= members.Count;
+            }
+            return ret;
+        }
+
+
+        // Actions
         internal void Breed()
         {
             List<Creature> membersCopy = new List<Creature>(members);
@@ -93,23 +127,6 @@ namespace Oikos.Kernel.Dwellers
                 }
             }
         }
-
-        internal int Count()
-        {
-            return members.Count();
-        }
-
-        internal Herd Clone()
-        {
-            List<Creature> cloned =  members.ConvertAll((x) => x.Clone());
-            Herd ret = new Herd(cloned, ancestor.Clone());
-            foreach(var clone in cloned)
-            {
-                clone.Herd = ret;
-            }
-            return ret;
-        }
-
         internal void Sleep()
         {
             List<Creature> temp = new List<Creature>(members);
@@ -184,9 +201,6 @@ namespace Oikos.Kernel.Dwellers
             }
             return loot;
         }
-
-        internal Habitat Habitat { get => habitat; set => habitat = value; }
-
         public void Kill(Creature killed)
         {
             members.Remove(killed);
@@ -195,28 +209,18 @@ namespace Oikos.Kernel.Dwellers
                 Habitat.Forget(this);
             }
         }
-        public Dictionary<string, double> AverageGenom()
+        public void AddMember(Creature member) { members.Add(member); }
+
+        // Cloners
+        internal Herd Clone()
         {
-            Dictionary<string, double> ret = new Dictionary<string, double>();
-            List<string> calls = Creature.Genes;
-            foreach(string key in calls)
+            List<Creature> cloned = members.ConvertAll((x) => x.Clone());
+            Herd ret = new Herd(cloned, ancestor.Clone());
+            foreach (var clone in cloned)
             {
-                ret[key] = 0;
-            }
-            foreach(var member in members)
-            {
-                foreach(string key in calls)
-                {
-                    ret[key] += member.Gene(key);
-                }
-            }
-            foreach(var key in calls)
-            {
-                ret[key] /= members.Count;
+                clone.Herd = ret;
             }
             return ret;
         }
-
-        public void AddMember(Creature member) { members.Add(member); }
     }
 }

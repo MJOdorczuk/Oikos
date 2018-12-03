@@ -7,7 +7,20 @@ namespace Oikos.Kernel.Environment
 {
     class World
     {
+
+        // Static fields
         private static Random rnd = new Random();
+        public static readonly double FREEZE_TEMP = -10;
+        public static readonly double DESERT_TEMP = 40;
+        public static readonly double TFMIN = 0;
+        public static readonly double TFMAX = 50;
+        public static readonly double ATMIN = -50;
+        public static readonly double ATMAX = 50;
+        public static readonly double TDMIN = 0;
+        public static readonly double TDMAX = 100;
+        // End of static fields
+
+        
         // Bioms of the world
         private Biom center;
         // Maximal average world temperature fluctuation
@@ -17,31 +30,10 @@ namespace Oikos.Kernel.Environment
         // Difference between average temperature on the poles and on the equator
         private double tempDiff = 20;
 
-        public double TempFluct { get => tempFluct; set => tempFluct = value; }
-        public double ATemp { get => aTemp; set => aTemp = value; }
-        public double TempDiff { get => tempDiff; set => tempDiff = value; }
+        
 
-        internal List<Species> Species()
-        {
-            List<Species> ret = new List<Species>();
-            List<Biom> biomes = Biomes();
-            foreach(var biom in biomes)
-            {
-                List<Species> biomSpecs = biom.Species();
-                ret = ret.Union(biomSpecs).ToList();
-            }
-            return ret;
-        }
-
-        public static readonly double FREEZE_TEMP = -10;
-        public static readonly double DESERT_TEMP = 40;
-        public static readonly double TFMIN = 0;
-        public static readonly double TFMAX = 50;
-        public static readonly double ATMIN = -50;
-        public static readonly double ATMAX = 50;
-        public static readonly double TDMIN = 0;
-        public static readonly double TDMAX = 100;
-
+        
+        // Constructors
         public World(int numberOfBiomes, double[] biomHarshness, double minAngle, double maxAngle)
         {
             if (biomHarshness.Count() < numberOfBiomes)
@@ -60,29 +52,44 @@ namespace Oikos.Kernel.Environment
             if (numberOfBiomes % 2 == 0) centerAngle += deltaAngle/2;
             center = new Biom(this, numberOfBiomes, biomHarshness, centerAngle, deltaAngle);
         }
-
         private World() { }
+        public World(int numberOfBiomes, double angle) : this(numberOfBiomes, GenerateHarshness(numberOfBiomes), -angle, angle) { }
+        public World(int numberOfBiomes) : this(numberOfBiomes, GenerateHarshness(numberOfBiomes), -Math.PI / 2, Math.PI / 2) { }
 
+        // Accessors
+        public double TempFluct { get => tempFluct; set => tempFluct = value; }
+        public double ATemp { get => aTemp; set => aTemp = value; }
+        public double TempDiff { get => tempDiff; set => tempDiff = value; }
+        internal List<Species> Species()
+        {
+            List<Species> ret = new List<Species>();
+            List<Biom> biomes = Biomes();
+            foreach (var biom in biomes)
+            {
+                List<Species> biomSpecs = biom.Species();
+                ret = ret.Union(biomSpecs).ToList();
+            }
+            return ret;
+        }
+        public List<Biom> Biomes()
+        {
+            return center.FindNorthernMost.ListOfSouthBiomes();
+        }
+        internal double GetTemperature(double angle)
+        {
+            var baseT = ATemp + (1 - Math.Cos(angle * Math.PI / 180)) * TempDiff;
+            var fluct = (0.5 - rnd.NextDouble()) * TempFluct;
+            return baseT + fluct;
+        }
+
+        // Actions
         internal void Tick()
         {
-            foreach(var biom in Biomes())
+            foreach (var biom in Biomes())
             {
                 biom.Tick();
             }
         }
-
-        public List<Biom> Biomes()
-        {
-            Biom northPole = center.FindNorthernMost;
-            List<Biom> ret = northPole.ListOfSouthBiomes();
-            ret.Add(northPole);
-            return ret;
-        }
-
-        public World(int numberOfBiomes, double angle) : this(numberOfBiomes, GenerateHarshness(numberOfBiomes), -angle, angle) { }
-
-        public World(int numberOfBiomes) : this(numberOfBiomes, GenerateHarshness(numberOfBiomes), -Math.PI / 2, Math.PI / 2) { }
-
         private static double[] GenerateHarshness(int numberOfBiomes)
         {
             double[] biomHarshness = new double[numberOfBiomes];
@@ -91,14 +98,6 @@ namespace Oikos.Kernel.Environment
                 biomHarshness[i] = rnd.NextDouble();
             return biomHarshness;
         }
-
-        internal double GetTemperature(double angle)
-        {
-            var baseT = ATemp + (1 - Math.Cos(angle*Math.PI/180)) * TempDiff;
-            var fluct = (0.5 - rnd.NextDouble()) * TempFluct;
-            return baseT + fluct;
-        }
-
         public void GenerateRandomSpecies(int n)
         {
             for(int i = 0; i < n; i++)
@@ -124,10 +123,12 @@ namespace Oikos.Kernel.Environment
             Habitat region = continent.Regions[(rnd.Next(0, continent.Regions.Count() - 1))];
             if (herd is null)
             {
-                region.AddHerd(new Herd(region));
+                new Herd(region);
             }
             else region.AddHerd(herd);
         }
+
+        // Cloners
         public World Clone()
         {
             World world = new World()

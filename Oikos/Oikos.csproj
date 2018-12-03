@@ -82,11 +82,11 @@
     <Compile Include="Controls\WorldGeneration\WorldGenerationControl.Designer.cs">
       <DependentUpon>WorldGenerationControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="Simulation.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Simulation.Designer.cs">
+      <DependentUpon>Simulation.cs</DependentUpon>
     </Compile>
     <Compile Include="Kernel\Dwellers\Creature.cs" />
     <Compile Include="Kernel\Dwellers\Herd.cs" />
@@ -114,8 +114,8 @@
     <EmbeddedResource Include="Controls\WorldGeneration\WorldGenerationControl.resx">
       <DependentUpon>WorldGenerationControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Simulation.resx">
+      <DependentUpon>Simulation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

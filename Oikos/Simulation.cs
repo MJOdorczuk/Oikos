@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace Oikos
 {
-    public partial class Form1 : Form
+    public partial class Simulation  : Form
     {
         private World world;
         private World copy = null;
@@ -22,8 +22,9 @@ namespace Oikos
         private readonly WorldGenerationControl worldGenerationControl;
         private readonly WorldPanel worldPanel;
         private bool worldRequested = false, worldProvided = true, endRequested = false;
+        private int dayCounter = 0;
 
-        public Form1()
+        public Simulation()
         {
             InitializeComponent();
             worldGenerationControl = new WorldGenerationControl(this)
@@ -94,6 +95,41 @@ namespace Oikos
 
         }
 
+        private void GenerationCounterBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        delegate void SetGenerationCounter();
+
+        private void UpdateDate()
+        {
+            if (GenerationCounterBox.InvokeRequired)
+            {
+                SetGenerationCounter d = new SetGenerationCounter(UpdateDate);
+                Invoke(d, new object[] {  });
+            }
+            else
+            {
+                GenerationCounterBox.Text = "Day: " + dayCounter;
+            }
+
+        }
+
+        private void RunCounter()
+        {
+            while(!endRequested)
+            {
+                UpdateDate();
+                Thread.Sleep(50);
+            }
+        }
+
+        private void Simulation_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
         private void Run()
         {
             World clone;
@@ -106,12 +142,14 @@ namespace Oikos
                 if (copyRequested) copy = clone;
                 worldPanel.Update(InfoContainer.ExtractInfo(world));
                 Thread.Sleep(100);
+                dayCounter++;
             }
         }
 
         public void Simulate()
         {
             new Thread(() => Run()).Start();
+            new Thread(() => RunCounter()).Start();
         }
     }
 }

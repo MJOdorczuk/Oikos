@@ -9,10 +9,10 @@ namespace Oikos.Kernel.Environment
 {
     class Biom
     {
-        //Static fields
+        // Static fields
         public static readonly uint HABITAT_COUNT = 10;
         public static readonly double CHANCE_TO_MIGRATE = 0.01;
-        //End of static fields
+        // End of static fields
 
         
         private readonly List<Habitat> regions = new List<Habitat>();
@@ -25,7 +25,7 @@ namespace Oikos.Kernel.Environment
         public readonly double harshness;
 
 
-        //Constructors
+        // Constructors
         public Biom(World world, int numberOfBiomes, double[] biomHarshness, double centerAngle, double deltaAngle)
         {
             this.world = world;
@@ -89,7 +89,7 @@ namespace Oikos.Kernel.Environment
             if (!(south is null || toNorth)) this.south = south.CloneSouth(world, this);
         }
 
-        //Accessors
+        // Accessors
         internal int SpeciesPop(Species spec)
         {
             var ret = 0;
@@ -182,7 +182,7 @@ namespace Oikos.Kernel.Environment
             }
         }
 
-
+        // Cloners
         private Biom CloneSouth(World world, Biom biom)
         {
             List<Habitat> regionsClones = new List<Habitat>();
@@ -205,8 +205,6 @@ namespace Oikos.Kernel.Environment
             Biom ret = new Biom(world, regionsClones, angle, cloned, biom, harshness, true);
             return ret;
         }
-        
-        
         internal Biom Clone(World world)
         {
             List<Habitat> regionsClones = new List<Habitat>();

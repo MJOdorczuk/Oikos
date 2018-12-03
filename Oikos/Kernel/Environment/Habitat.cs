@@ -9,25 +9,69 @@ namespace Oikos.Kernel.Environment
 {
     class Habitat
     {
+        // Static fields
         private static readonly double FERTILE_TEMP = (World.FREEZE_TEMP - World.DESERT_TEMP) / 2;
         private static readonly double FERTILITY_RATIO = 1;
         private static readonly double FLORA_LIMIT = 100000;
+        // End of static fields
+
+
         public readonly List<Herd> inhabitants = new List<Herd>();
         private double temperature;
         private double nutrition;
         public readonly Biom biom;
 
+
+        // Constructors
         public Habitat(Biom biom)
         {
             this.biom = biom;
         }
-
         private Habitat(Biom biom, List<Herd> inhabitants)
         {
             this.biom = biom;
             this.inhabitants = inhabitants;
         }
 
+        // Accessors
+        internal double Nutrition()
+        {
+            return nutrition;
+        }
+        internal List<Species> Species()
+        {
+            List<Species> ret = new List<Species>();
+            foreach (var herd in inhabitants)
+            {
+                if (!ret.Contains(herd.ancestor.species))
+                    ret.Add(herd.ancestor.species);
+            }
+            return ret;
+        }
+        internal int Population()
+        {
+            var pop = 0;
+            foreach (var herd in inhabitants)
+            {
+                pop += herd.Count();
+            }
+            return pop;
+        }
+        public double Temperature => temperature;
+        internal int SpeciesPop(Species spec)
+        {
+            var pops = 0;
+            foreach (var herd in inhabitants)
+            {
+                if (herd.ancestor.species == spec)
+                {
+                    pops += herd.Count();
+                }
+            }
+            return pops;
+        }
+
+        // Actions
         public void Tick()
         {
             temperature = biom.GetTemperature();
@@ -52,50 +96,21 @@ namespace Oikos.Kernel.Environment
                 herd.Breed();
             }
         }
-
-        internal double Nutrition()
-        {
-            return nutrition;
-        }
-
-        internal List<Species> Species()
-        {
-            List<Species> ret = new List<Species>();
-            foreach(var herd in inhabitants)
-            {
-                if(!ret.Contains(herd.ancestor.species))
-                    ret.Add(herd.ancestor.species);
-            }
-            return ret;
-        }
-
-        internal int Population()
-        {
-            var pop = 0;
-            foreach(var herd in inhabitants)
-            {
-                pop += herd.Count();
-            }
-            return pop;
-        }
-
         public Habitat Move()
         {
             return this.biom.Move(this);
         }
-
         internal void Forget(Herd herd)
         {
             this.inhabitants.Remove(herd);
         }
-
-        public double Temperature => temperature;
         internal void AddHerd(Herd herd)
         {
             inhabitants.Add(herd);
             herd.Habitat = this;
         }
 
+        // Cloners
         internal Habitat Clone(Biom biom)
         {
             List<Herd> clonedHerds = new List<Herd>();
@@ -109,17 +124,6 @@ namespace Oikos.Kernel.Environment
             return ret;
         }
 
-        internal int SpeciesPop(Species spec)
-        {
-            var pops = 0;
-            foreach(var herd in inhabitants)
-            {
-                if(herd.ancestor.species == spec)
-                {
-                    pops += herd.Count();
-                }
-            }
-            return pops;
-        }
+        
     }
 }

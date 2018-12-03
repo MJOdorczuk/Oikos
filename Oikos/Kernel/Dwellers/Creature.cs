@@ -46,9 +46,9 @@ namespace Oikos.Kernel.Dwellers
         private readonly static Random rnd = new Random();
 
         //End of static fields
-        
-        
-        
+
+
+
         /*
         * Gene pool
         */
@@ -63,22 +63,20 @@ namespace Oikos.Kernel.Dwellers
          */
         private double energyStorage, energyConsumption, chanceOfDeath, chanceOfBreed;
 
-        
 
-        
 
         //Constructors
         public Creature(double[] genom, Herd herd, bool female)
         {
             if (genom.Count() != GENOMSIZE) throw new Exception("Wrong genom size");
-            foreach(double gene in genom)
+            foreach (double gene in genom)
             {
                 if (gene < 0 || gene > 1) throw new Exception("Parameter out of range");
             }
             this.genom = genom;
             this.Herd = herd;
             this.female = female;
-            if(!(herd is null)) herd.AddMember(this);
+            if (!(herd is null)) herd.AddMember(this);
             if (herd is null) species = new Species(this);
             else if (herd.ancestor is null) species = new Species(this);
             else species = herd.ancestor.species;
@@ -87,7 +85,7 @@ namespace Oikos.Kernel.Dwellers
         public Creature(Creature father, Creature mother)
         {
             if (father.female || !mother.female || !father.species.CloseWith(mother.species)) throw new Exception("Not possible to breed");
-            for(int i = 0; i < GENOMSIZE; i++)
+            for (int i = 0; i < GENOMSIZE; i++)
             {
                 genom[i] = Mutate((father.genom[i] + mother.genom[i]) / 2);
             }
@@ -96,7 +94,7 @@ namespace Oikos.Kernel.Dwellers
             herd.AddMember(this);
             double paternalDistance = Distance(father);
             double maternalDistance = Distance(mother);
-            if(paternalDistance > RELATIVITY_LIMIT && maternalDistance > RELATIVITY_LIMIT)
+            if (paternalDistance > RELATIVITY_LIMIT && maternalDistance > RELATIVITY_LIMIT)
             {
                 species = new Species(this);
                 species.RelateWith(mother.species);
@@ -246,13 +244,13 @@ namespace Oikos.Kernel.Dwellers
         private void AnalyseGenePool()
         {
             energy = energyStorage = Size * (Carnivory / 2 + 0.5) * (1 - TempRange) * (1 - Speed) * (1 - Agility);
-            energyConsumption = (Size / 2 + 1 / 2) * Reflex * (1 - TempOpt / 2) * TempRange * Sense * Speed * Agility*0.01;
-            chanceOfDeath = (1 - Size * 0.9) * (1 - Reflex * 0.2) * (Speed / 2 + 0.5) * Mutability;
-            chanceOfBreed = Math.Pow((1 - Size) * (Carnivory * 0.75 + 0.25) * Speed * Agility,0.8);
+            energyConsumption = (Size / 2 + 1 / 2) * Reflex * (1 - TempOpt / 2) * TempRange * Sense * Speed * Agility * 0.01;
+            chanceOfDeath = Math.Pow((1 - Size * 0.9) * (1 - Reflex * 0.2) * (Speed / 2 + 0.5) * Mutability, 2);
+            chanceOfBreed = Math.Pow((1 - Size) * (Carnivory * 0.75 + 0.25) * Speed * Agility, 0.8);
         }
         private double Mutate(double value)
         {
-            double mutation = Mutability * (0.5 - rnd.NextDouble())* MUTABILITY_LIMIT;
+            double mutation = Mutability * (0.5 - rnd.NextDouble()) * MUTABILITY_LIMIT;
             if (mutation > 0) value += (1 - value) * mutation;
             else value -= value * mutation;
             return value;
@@ -260,7 +258,7 @@ namespace Oikos.Kernel.Dwellers
         public double Distance(Creature creature)
         {
             double distance = 0;
-            for(int i = 0; i < GENOMSIZE; i++)
+            for (int i = 0; i < GENOMSIZE; i++)
             {
                 double a = genom[i];
                 double b = creature.genom[i];

@@ -17,9 +17,9 @@ namespace Oikos.Controls
         private int numOfBiomes = 1, numOfSpec, maxAngle, numOfHandMadeSpec;
         private List<Herd> herdsGenerated = new List<Herd>();
         private readonly GenomControl genomControl;
-        private readonly Form1 parent;
+        private readonly Simulation parent;
 
-        public WorldGenerationControl(Form1 parent)
+        public WorldGenerationControl(Simulation parent)
         {
             this.parent = parent;
             InitializeComponent();

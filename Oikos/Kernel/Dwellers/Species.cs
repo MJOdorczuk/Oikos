@@ -8,9 +8,7 @@ namespace Oikos.Kernel.Dwellers
 {
     class Species
     {
-        private readonly Creature ancestor;
-        public readonly string name;
-        private List<Species> closeSpecies = new List<Species>();
+        // Static fields
         private static readonly List<string> prefixes = new List<string>()
         {
             "Arbo",
@@ -56,13 +54,22 @@ namespace Oikos.Kernel.Dwellers
             "Hibernii"
         };
         private static Random rnd = new Random();
+        // End of static fields
 
+        
+        private readonly Creature ancestor;
+        public readonly string name;
+        private List<Species> closeSpecies = new List<Species>();
+        
+
+        // Constructors
         public Species(Creature ancestor)
         {
             this.ancestor = ancestor;
             this.name = GenerateName();
         }
 
+        // Actions
         private string GenerateName()
         {
             string name = prefixes[rnd.Next(0, prefixes.Count())];
@@ -77,7 +84,6 @@ namespace Oikos.Kernel.Dwellers
             species.closeSpecies.Add(this);
             closeSpecies.Add(species);
         }
-
         public bool CloseWith(Species species)
         {
             return species == this || closeSpecies.Exists(s => s == species);

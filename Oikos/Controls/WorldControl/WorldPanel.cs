@@ -67,7 +67,7 @@ namespace Oikos.Controls.WorldControl
 
         private void WorldPanel_Load(object sender, EventArgs e)
         {
-
+        
         }
 
         delegate void SetInfoPanelCallBack(InfoPanel info);
@@ -85,6 +85,24 @@ namespace Oikos.Controls.WorldControl
             }
         }
 
+        delegate void ClearInfoPanelsCallBack();
+
+        private void ClearInfoPanels()
+        {
+            if(this.InvokeRequired)
+            {
+                ClearInfoPanelsCallBack d = new ClearInfoPanelsCallBack(ClearInfoPanels);
+                Invoke(d, new object[] { });
+            }
+            else foreach (var ic in Controls)
+            {
+                if (ic is InfoPanel ip)
+                {
+                    Controls.Remove(ip);
+                }
+            }
+        }
+
         internal void Update(InfoContainer infoContainer)
         {
             for(int i = 0; i < infoContainer.biomInfos.Count(); i++)
@@ -97,7 +115,8 @@ namespace Oikos.Controls.WorldControl
                 groups[i].Item3.Value(nutri);
             }
             Point point = new Point(300, 0);
-            foreach(var sPop in infoContainer.speciesPops)
+            ClearInfoPanels();
+            foreach (var sPop in infoContainer.speciesPops)
             {
                 InfoPanel info = new InfoPanel(sPop.Key.name)
                 {

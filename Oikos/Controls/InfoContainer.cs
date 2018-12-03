@@ -39,8 +39,6 @@ namespace Oikos.Controls
             ret.speciesPops = speciesPops;
             return ret;
         }
-
-
-
+        
     }
 }
